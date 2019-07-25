@@ -8,7 +8,7 @@ dstel,0.09
 dlam_micron,0.6
 throughput,0.7
 th,0.0833
-nd,10.0
+nd,60.0
 npix,15
 tr,7.1
 nr,30.0
