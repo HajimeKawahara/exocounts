@@ -38,7 +38,11 @@ class ObsClass(object):
         
         self.sign = None
         self.sigd = None 
-        self.sigr = None 
+        self.sigr = None
+        self.sign_relative = None
+        self.sigd_relative = None 
+        self.sigr_relative = None
+        
         self.sat = False #Saturation
 
         
@@ -57,14 +61,19 @@ class ObsClass(object):
     def calc_noise(self):
         from exocounts.exocounts import nstar
         nstar.Nstar(self.inst,self.target,self)
-                
+        ppm=1.e6
         hr2sec=3600.0
         ndframe=self.texposure*hr2sec*self.inst.ndark
         try:
             self.sigd=np.sqrt(self.mu*self.napix*ndframe)
+            self.sigd_relative=self.sigd/self.nphoton_exposure*ppm
         except:
             self.sigd=None
+            self.sigd_relative=None
+
         try:
             self.sigr=np.sqrt(self.mu*self.napix*self.texposure*hr2sec/self.tframe)*self.inst.nread
+            self.sigr_relative=self.sigr/self.nphoton_exposure*ppm
         except:
-            self.sigd=None
+            self.sigr=None
+            self.sigr_relative=None

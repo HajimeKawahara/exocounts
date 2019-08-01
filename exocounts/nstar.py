@@ -66,3 +66,5 @@ def Nstar(Inst,Target,Obs,info=False):
     Obs.sign=np.sqrt(Nphoton)
     Obs.flux = flux
     Obs.photonf= photonf
+    ppm=1.e6
+    Obs.sign_relative = Obs.sign/Obs.nphoton_exposure*ppm
