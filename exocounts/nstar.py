@@ -26,19 +26,40 @@ def photon_Blunitless(T,lamb):
 
     return pB
 
-def Nstar(Inst,Target,Obs,info=False):
+def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
     tstar=Target.teff*u.K    
     lamin=Inst.lamb*u.micron
     d=Target.dpc*u.pc
     runit=const.R_sun            
-    r=Target.rstar*runit        
-    flux=np.pi*Blunitless(tstar,lamin)*r*r/(d*d)
-    photonf=np.pi*photon_Blunitless(tstar,lamin)*r*r/(d*d)
+    r=Target.rstar*runit
+    texp=Obs.texposure*u.h
     a=np.pi*(Inst.dtel/2.0*u.m)**2 - np.pi*(Inst.dstel/2.0*u.m)**2
     dl=Inst.dlam*u.micron
-    texp=Obs.texposure*u.h
-    photon=photonf*a*dl*texp*Inst.throughput
     
+    if integrate:
+        ddl=dl/Nintegrate
+        lamarr=lamin+np.linspace(-dl/2,dl/2,Nintegrate)
+        fluxarr=[]
+        photonfarr=[]
+        photonarr=[]
+        for j,lamlow in enumerate(lamarr[:-1]):
+            lamc=(lamarr[j+1]+lamlow)/2.0
+            dll=lamarr[j+1]-lamlow
+            flux=np.pi*Blunitless(tstar,lamc)*r*r/(d*d)
+            photonf=np.pi*photon_Blunitless(tstar,lamc)*r*r/(d*d)
+            photon=photonf*a*dll*texp*Inst.throughput
+            fluxarr.append(flux)
+            photonfarr.append(photonf)
+            photonarr.append(photon)
+
+        photon=np.sum(photonarr)
+    else:
+        photon=photonf*a*dl*texp*Inst.throughput
+        photon=photon.to(1)
+
+    flux=np.pi*Blunitless(tstar,lamin)*r*r/(d*d)
+    photonf=np.pi*photon_Blunitless(tstar,lamin)*r*r/(d*d)
+        
     if info:
         print("B(lambda) for",tstar,"at ",lamin)
         print('{:e}'.format(Blunitless(tstar,lamin).to(u.erg/u.cm/u.cm/u.angstrom/u.s)))
@@ -60,7 +81,7 @@ def Nstar(Inst,Target,Obs,info=False):
         print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon.to(1))*1e2,"[%]")
         print("7 sigma depth=",np.sqrt(1.0/photon.to(1))*1e2*7.0,"[%]")
 
-    Nphoton=photon.to(1)
+    Nphoton=photon
     Obs.nphoton_exposure=Nphoton
     Obs.nphoton_frame = Nphoton*(Obs.tframe/(Obs.texposure*3600))
     Obs.sign=np.sqrt(Nphoton)
