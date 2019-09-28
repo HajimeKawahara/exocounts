@@ -11,7 +11,7 @@ from astropy import units as u
 def get_magdict(maglist=None):
     magdict={}
     if(maglist is None):
-        maglist="/home/kawahara/exocal/data/mag.list"
+        maglist="../data/mag.list"
 
 #    print "Read "+maglist
 

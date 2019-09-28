@@ -6,7 +6,6 @@ from io import StringIO
 import csv
 from astropy import constants as const
 from astropy import units as u
-import magflux
 
 def Blambda(T,lamb):
     lamb5=(lamb.to(u.m))**5    

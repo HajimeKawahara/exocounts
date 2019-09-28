@@ -59,7 +59,7 @@ class ObsClass(object):
             self.sat = False
             
     def calc_noise(self):
-        from exocounts.exocounts import nstar
+        import nstar
         nstar.Nstar(self.inst,self.target,self)
         ppm=1.e6
         hr2sec=3600.0

@@ -1,5 +1,5 @@
-from exocounts.exocounts import exocounts
-from exocounts.exocounts import convmag
+import exocounts
+import convmag
 
 import numpy as np
 
