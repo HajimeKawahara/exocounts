@@ -16,8 +16,9 @@ class TargetClass(object):
         self.teff = None
         self.rstar = None
         self.dpc = None
-
-
+        self.name = "No Name"
+        self.contrast = 1
+        
 class ObsClass(object):
     def __init__(self,Inst,Target):
         self.inst = Inst
