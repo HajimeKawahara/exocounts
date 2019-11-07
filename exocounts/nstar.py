@@ -74,7 +74,7 @@ def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
         print("Photon Count with observation:")
         print("  telescope diameter", Inst.dtel, "[m]")
         print("  band width", Inst.dlam,"[micron]")
-        print("  exposure", Obs.texposure,"[hour] = ",Obs.texposure*60.0," [min]")
+        print("  exposure", Obs.texposure,"[hour] = ",Obs.texposure.to(u.min)," [min]")
         print("  throughput", Inst.throughput)
         print("N=",'{:e}'.format(photon.to(1)))
         print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon.to(1))*1e6,"[ppm]")
@@ -83,7 +83,7 @@ def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
 
     Nphoton=photon
     Obs.nphoton_exposure=Nphoton
-    Obs.nphoton_frame = Nphoton*(Obs.tframe/(Obs.texposure*3600))
+    Obs.nphoton_frame = Nphoton*(Obs.tframe/Obs.texposure).to(1)
     Obs.sign=np.sqrt(Nphoton)
     Obs.flux = flux
     Obs.photonf= photonf

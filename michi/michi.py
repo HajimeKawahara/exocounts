@@ -5,42 +5,48 @@ import numpy as np
 from astropy import constants as const
 from astropy import units as u
 
-ost=exocounts.InstClass()
+michi=exocounts.InstClass()
 michi.lamb =  11.0*u.micron #micron
-michi.dlam = 0.5*u.micron #micron
+michi.dlam = 1.0*u.micron #micron
 #michi.dtel = 9.1 #telescope diameter m
 michi.dtel = 30.0*u.m #telescope diameter m
 
-michi.dstel = 0.00 #secondary telescope diameter m
+michi.dstel = 0.00*u.m #secondary telescope diameter m
 michi.throughput = 0.8*0.9*0.3 #QE x Efficiency x Inst throughtput
-michi.ndark = 0.0 #dark current
+michi.ndark = 0.0/u.s #dark current [1/s]
 michi.nread = 0.0 #nr
 michi.fullwell = 80000.
 
-michi.fgtel=0.25/u*s/u*m/u*m/u.arcsec/u.arcsec/u.micron #pt/s/m2/arcsec2/um
-michi.fgatm=0.2/u*s/u*m/u*m/u.arcsec/u.arcsec/u.micron #pt/s/m2/arcsec2/um
+fgunit=u.s*u.m*u.m*u.arcsec*u.arcsec*u.micron
+michi.fgtel=0.05*1e10/fgunit #pt/s/m2/arcsec2/um
+michi.fgatm=0.05*1e10/fgunit #pt/s/m2/arcsec2/um
 
 target=exocounts.TargetClass()
 target.name="Tau Ceti Earth"
-target.teff = 5344.0*u.K #K
-target.rstar = 0.793*const.R_sun #Rsolar
-target.dpc = 3.65*u.pc #pc
+target.teff = 300.0*u.K #K
+target.rstar = 1.0*const.R_earth 
+target.d = 3.65*u.pc #pc
 
-obs=exocounts.ObsClass(ost,target) 
+obs=exocounts.ObsClass(michi,target) 
 
-obs.texposure = 30.0 #cadence [hour] # 30 x visits (1 hr=transit dur trappist e) 
-obs.tframe = 7.1  #time for one frame [sec]
+obs.texposure = 30.0*u.h #cadence [hour] # 30 x visits (1 hr=transit dur trappist e) 
+obs.tframe = 7.1*u.s  #time for one frame [sec]
 obs.napix = 15 # number of the pixels in aperture 
 obs.mu = 1 
 S=1.8*1.8*np.pi #core size
 obs.effnpix = S/3.0 #3 is an approx. increment factor of PSF
 obs.mu = 1
-obs.fgaparture = diflimit.ld(michi.lamb*u.micron,michi.dtel*u.m))**2*np.pi
+obs.fgaparture = ((diflimit.ld(michi.lamb,michi.dtel))/2.0)**2*np.pi
 
-print(obs.fgaparture*(michi.fgtel+michi.fgatm)
 obs.target = target
 obs.update()
 
 magdict=convmag.get_magdict()
-print("photon noise [ppm]=",obs.sign_relative)
-print("photon N for exp=",obs.nphoton_exposure)
+print("photon count for foreground",obs.nphoton_foreground)
+print("photon count signal for exp=",obs.nphoton_exposure)
+
+print("S/N for Nsig/sqrt(Nthermal)",obs.nphoton_exposure/np.sqrt(obs.nphoton_foreground))
+
+
+#print("Contrast for/sig",obs.nphoton_foreground/obs.nphoton_exposure)
+#print("photon noise [ppm]=",obs.sign_relative)

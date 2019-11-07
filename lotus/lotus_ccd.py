@@ -1,5 +1,7 @@
 from exocounts.exocounts import exocounts
 from exocounts.exocounts import convmag
+from astropy import constants as const
+from astropy import units as u
 
 import numpy as np
 
@@ -16,7 +18,7 @@ lotus.fullwell = 1.e6
 target=exocounts.TargetClass()
 target.teff = 6000.0 #K
 target.rstar = 1.0 #Rsolar
-target.dpc = 300.0 #pc
+target.d = 300.0*u.pc #pc
 
 obs=exocounts.ObsClass(lotus,target) 
 

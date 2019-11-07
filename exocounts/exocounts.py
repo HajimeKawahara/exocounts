@@ -84,3 +84,9 @@ class ObsClass(object):
         except:
             self.sigr=None
             self.sigr_relative=None
+
+        #foreground
+        try:
+            self.nphoton_foreground=(self.fgaparture*(self.inst.fgtel+self.inst.fgatm)*self.inst.dlam*self.texposure*(self.inst.dtel/2.0)**2*np.pi*self.inst.throughput).to(1)
+        except:
+            self.nphoton_foreground=None

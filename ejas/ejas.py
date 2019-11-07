@@ -11,7 +11,7 @@ ejas.dlam = 0.6*u.micron #micron
 ejas.dtel = 0.31*u.m #telescope diameter m
 ejas.dstel = 0.09*u.m #secondary telescope diameter m
 ejas.throughput = 0.7
-ejas.ndark = 60.0 #dark current
+ejas.ndark = 60.0/u.s #dark current [1/s]
 ejas.nread = 30.0 #nr
 ejas.fullwell = 80000.
 
@@ -23,7 +23,7 @@ target.d = 15.0*u.pc #pc
 obs=exocounts.ObsClass(ejas,target) 
 
 obs.texposure = 0.0833*u.h #cadence [hour]
-obs.tframe = 7.1  #time for one frame [sec]
+obs.tframe = 7.1*u.s  #time for one frame [sec]
 obs.napix = 15 # number of the pixels in aperture 
 obs.mu = 1 
 S=1.8*1.8*np.pi #core size
