@@ -22,9 +22,9 @@ michi.fgatm=0.2/u*s/u*m/u*m/u.arcsec/u.arcsec/u.micron #pt/s/m2/arcsec2/um
 
 target=exocounts.TargetClass()
 target.name="Tau Ceti Earth"
-target.teff = 2559.0 #K
-target.rstar = 0.117 #Rsolar
-target.dpc = 12.1 #pc
+target.teff = 5344.0*u.K #K
+target.rstar = 0.793*const.R_sun #Rsolar
+target.dpc = 3.65*u.pc #pc
 
 obs=exocounts.ObsClass(ost,target) 
 
@@ -35,9 +35,9 @@ obs.mu = 1
 S=1.8*1.8*np.pi #core size
 obs.effnpix = S/3.0 #3 is an approx. increment factor of PSF
 obs.mu = 1
-obs.aparture = diflimit.ld(michi.lamb*u.micron,michi.dtel*u.m))**2*np.pi
+obs.fgaparture = diflimit.ld(michi.lamb*u.micron,michi.dtel*u.m))**2*np.pi
 
-
+print(obs.fgaparture*(michi.fgtel+michi.fgatm)
 obs.target = target
 obs.update()
 

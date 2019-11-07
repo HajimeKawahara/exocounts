@@ -34,7 +34,7 @@ class ObsClass(object):
         self.tframe = None  #tr   
         self.napix = None
         self.effnpix = None #conversion for the brightest pixel
-
+        self.fgaperture = None #for foreground noise
         ####OUTPUTS####
         self.nphoton_exposure = None
         self.nphoton_frame = None
@@ -49,7 +49,7 @@ class ObsClass(object):
         self.sigr_relative = None
         
         self.sat = False #Saturation
-
+        
         
     def update(self):
         self.calc_noise()
