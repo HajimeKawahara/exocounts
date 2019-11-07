@@ -1,4 +1,5 @@
 import numpy as np
+from astropy import units as u
 
 class InstClass(object):
     def __init__(self):
@@ -15,7 +16,7 @@ class TargetClass(object):
     def __init__(self):
         self.teff = None
         self.rstar = None
-        self.dpc = None
+        self.d = None
         self.name = "No Name"
         self.contrast = 1
         
@@ -63,8 +64,10 @@ class ObsClass(object):
         import nstar
         nstar.Nstar(self.inst,self.target,self)
         ppm=1.e6
-        hr2sec=3600.0
-        ndframe=self.texposure*hr2sec*self.inst.ndark
+        #hr2sec=3600.0
+        #ndframe=self.texposure*hr2sec*self.inst.ndark
+        ndframe=self.texposure.to(u.s)*self.inst.ndark
+
         try:
             self.sigd=np.sqrt(self.mu*self.napix*ndframe)
             self.sigd_relative=self.sigd/self.nphoton_exposure*ppm
@@ -73,7 +76,7 @@ class ObsClass(object):
             self.sigd_relative=None
 
         try:
-            self.sigr=np.sqrt(self.mu*self.napix*self.texposure*hr2sec/self.tframe)*self.inst.nread
+            self.sigr=np.sqrt(self.mu*self.napix*self.texposure.to(u.s)/self.tframe)*self.inst.nread
             self.sigr_relative=self.sigr/self.nphoton_exposure*ppm
         except:
             self.sigr=None

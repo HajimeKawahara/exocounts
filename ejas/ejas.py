@@ -1,26 +1,28 @@
 import exocounts
+import csv
 import convmag
-
+from astropy import constants as const
+from astropy import units as u
 import numpy as np
 
 ejas=exocounts.InstClass()
-ejas.lamb = 1.4 #micron
-ejas.dlam = 0.6 #micron
-ejas.dtel = 0.31 #telescope diameter m
-ejas.dstel = 0.09 #secondary telescope diameter m
+ejas.lamb = 1.4*u.micron #micron
+ejas.dlam = 0.6*u.micron #micron
+ejas.dtel = 0.31*u.m #telescope diameter m
+ejas.dstel = 0.09*u.m #secondary telescope diameter m
 ejas.throughput = 0.7
 ejas.ndark = 60.0 #dark current
 ejas.nread = 30.0 #nr
 ejas.fullwell = 80000.
 
 target=exocounts.TargetClass()
-target.teff = 3000.0 #K
-target.rstar = 0.2 #Rsolar
-target.dpc = 15.0 #pc
+target.teff = 3000.0*u.K #K
+target.rstar = 0.2*const.R_sun #Rsolar
+target.d = 15.0*u.pc #pc
 
 obs=exocounts.ObsClass(ejas,target) 
 
-obs.texposure = 0.0833 #cadence [hour]
+obs.texposure = 0.0833*u.h #cadence [hour]
 obs.tframe = 7.1  #time for one frame [sec]
 obs.napix = 15 # number of the pixels in aperture 
 obs.mu = 1 

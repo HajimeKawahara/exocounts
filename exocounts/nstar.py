@@ -26,14 +26,13 @@ def photon_Blunitless(T,lamb):
     return pB
 
 def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
-    tstar=Target.teff*u.K    
-    lamin=Inst.lamb*u.micron
-    d=Target.dpc*u.pc
-    runit=const.R_sun            
-    r=Target.rstar*runit
-    texp=Obs.texposure*u.h
-    a=np.pi*(Inst.dtel/2.0*u.m)**2 - np.pi*(Inst.dstel/2.0*u.m)**2
-    dl=Inst.dlam*u.micron
+    tstar=Target.teff    
+    lamin=Inst.lamb
+    d=Target.d
+    r=Target.rstar
+    texp=Obs.texposure
+    a=np.pi*(Inst.dtel/2.0)**2 - np.pi*(Inst.dstel/2.0)**2
+    dl=Inst.dlam
     contrast = Target.contrast
     if integrate:
         ddl=dl/Nintegrate
