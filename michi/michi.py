@@ -2,6 +2,8 @@ import exocounts
 import convmag
 import diflimit
 import numpy as np
+from astropy import constants as const
+from astropy import units as u
 
 ost=exocounts.InstClass()
 michi.lamb =  11.0*u.micron #micron
@@ -15,8 +17,8 @@ michi.ndark = 0.0 #dark current
 michi.nread = 0.0 #nr
 michi.fullwell = 80000.
 
-michi.fgtel=0.25 #pt/s/m2/arcsec2/um
-michi.fgatm=0.2 #pt/s/m2/arcsec2/um
+michi.fgtel=0.25/u*s/u*m/u*m/u.arcsec/u.arcsec/u.micron #pt/s/m2/arcsec2/um
+michi.fgatm=0.2/u*s/u*m/u*m/u.arcsec/u.arcsec/u.micron #pt/s/m2/arcsec2/um
 
 target=exocounts.TargetClass()
 target.name="Tau Ceti Earth"

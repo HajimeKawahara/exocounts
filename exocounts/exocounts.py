@@ -11,6 +11,9 @@ class InstClass(object):
         self.ndark = None #nd
         self.nread = None #nr
         self.fullwell = None
+        self.fgtel = 0.0 #foreground from a telescope
+        self.fgatm = 0.0 #foreground from atmosphere
+
         
 class TargetClass(object):
     def __init__(self):
