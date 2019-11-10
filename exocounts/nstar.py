@@ -33,6 +33,26 @@ def getflux(Target, lamin):
 #    return flux.to(u.erg/u.cm/u.cm/u.micron/u.s)
     return flux.to(u.J/u.m/u.m/u.micron/u.s)
 
+def getfluxph(Target, lamin):
+    tstar=Target.teff    
+    d=Target.d
+    r=Target.rstar
+    flux=np.pi*Blunitless(tstar,lamin)*r*r/(d*d)/(const.h*const.c/lamin)
+#    return flux.to(u.erg/u.cm/u.cm/u.micron/u.s)
+    return flux.to(1/u.m/u.m/u.micron/u.s)
+
+
+def getfluxJy(Target, lamin):
+    tstar=Target.teff    
+    d=Target.d
+    r=Target.rstar
+    flux=np.pi*Blunitless(tstar,lamin)*r*r/(d*d)*lamin*lamin/const.c
+    flux=flux.to(u.Jy)
+    return flux
+
+#    return flux.to(u.J/u.m/u.m/u.micron/u.s)
+
+
 def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
     tstar=Target.teff    
     lamin=Inst.lamb

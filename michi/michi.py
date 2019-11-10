@@ -13,7 +13,9 @@ michi.dlam = 1.0*u.micron #micron
 michi.dtel = 30.0*u.m #telescope diameter m
 
 michi.dstel = 0.00*u.m #secondary telescope diameter m
-michi.throughput = 0.8*0.9*0.3 #QE x Efficiency x Inst throughtput
+#michi.throughput = 0.8*0.9*0.3 #QE x Efficiency x Inst throughtput
+michi.throughput = 0.5 #QE x Efficiency x Inst throughtput
+
 michi.ndark = 0.0/u.s #dark current [1/s]
 michi.nread = 0.0 #nr
 michi.fullwell = 80000.
@@ -24,7 +26,7 @@ michi.fgatm=0.05*1e10/fgunit #pt/s/m2/arcsec2/um
 
 target=exocounts.TargetClass()
 target.name="Tau Ceti Earth"
-target.teff = 300.0*u.K #K ## optimistic (no cloud)
+target.teff = 255.0*u.K #K ## optimistic (no cloud)
 target.rstar = 1.0*const.R_earth 
 
 tau_ceti_teff = 5344.0*u.K #K ## optimistic (no cloud)
@@ -35,11 +37,12 @@ tau_ceti_rstar = 0.79*const.R_sun
 c=(((target.rstar)**2*nstar.Blunitless(target.teff,michi.lamb))/(nstar.Blunitless(tau_ceti_teff,michi.lamb)*(tau_ceti_rstar)**2)).to(1)
 print("contrast=",c)
 
-target.d = 3.65*u.pc #pc
+#target.d = 3.65*u.pc #pc
+target.d = 3.2*u.pc #pc
 
 obs=exocounts.ObsClass(michi,target) 
 
-obs.texposure = 30.0*u.h #cadence [hour] # 30 x visits (1 hr=transit dur trappist e) 
+obs.texposure = 100.0*u.h #cadence [hour] # 30 x visits (1 hr=transit dur trappist e) 
 obs.tframe = 7.1*u.s  #time for one frame [sec]
 obs.napix = 15 # number of the pixels in aperture 
 obs.mu = 1 

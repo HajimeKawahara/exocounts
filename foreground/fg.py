@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from astropy import constants as const
 from astropy import units as u
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+import diflimit
 
 fac=(const.h*const.c/u.m).value
 dat=pd.read_csv("../data/gemini/mk_skybg_nq_10_10_ph.dat",names=("lam","ph"),delimiter=";")
@@ -16,6 +17,16 @@ print(dat2["lam"])
 wav2=dat2["lam"]*1.e-3
 #dat["ph"] ph/sec/arcsec2/nm/m2
 emis2=(fac/(dat2["lam"]*1.e-9)*dat2["ph"]*1.e3)
+
+mask=(wav>10.0)*(wav<12.5)
+print("Near filter mean e=",np.mean(emis[mask]))
+aparture = ((diflimit.ld(11.0*u.micron,30.*u.m)))**2*np.pi
+print("TMT aperture a=",aparture)
+print("e*a=",aparture*np.mean(emis[mask]))
+
+apartureV = ((diflimit.ld(11.0*u.micron,10.*u.m)))**2*np.pi
+print("VLT aperture a=",apartureV)
+print("e*a2=",apartureV*np.mean(emis[mask]))
 
 
 fig=plt.figure()
