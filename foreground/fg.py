@@ -37,6 +37,8 @@ if TAO:
     print(hnu)
     
     ftao=tao["Fatm"]/tao["WL"]/sr2arcsec2*(hnu/tao["WL"])
+    ftel=tao["tel3"]/tao["WL"]/sr2arcsec2*(hnu/tao["WL"])
+    ftel2=tao["tel1"]/tao["WL"]/sr2arcsec2*(hnu/tao["WL"])
 
     
 fig=plt.figure(figsize=(10,6))
@@ -52,6 +54,10 @@ plt.ylabel("Foreground [J/s/arcsec2/m2/um]",fontsize=16)
 #plt.title("Maunakea airmass=1 wvp = 1mm",fontsize=16)
 if TAO:
     plt.plot(tao["WL"],ftao,color="C1",label="TAO 0.34mm")
+    plt.plot(tao["WL"],ftel,color="C2",label="TAO telescope 9% em")
+    plt.plot(tao["WL"],ftel2,color="C3",label="TAO telescope 3% em")
+
+    
 plt.legend()
 plt.tick_params(labelsize=16)
 ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
