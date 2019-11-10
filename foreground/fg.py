@@ -28,16 +28,32 @@ apartureV = ((diflimit.ld(11.0*u.micron,10.*u.m)))**2*np.pi
 print("VLT aperture a=",apartureV)
 print("e*a2=",apartureV*np.mean(emis[mask]))
 
+TAO=True
 
-fig=plt.figure()
+if TAO:
+    tao=pd.read_csv("../data/tao/TAO_MIR_Emission.dat",delimiter=" ",comment="#",names=("WL","Tatm","Fatm","tel1","tel2","tel3"))
+    sr2arcsec2=(1.0*u.sr/u.arcsec/u.arcsec).to(1)
+    hnu=(const.h*const.c/(1.0*u.micron)).to("J").value
+    print(hnu)
+    
+    ftao=tao["Fatm"]/tao["WL"]/sr2arcsec2*(hnu/tao["WL"])
+
+    
+fig=plt.figure(figsize=(10,6))
 ax=fig.add_subplot(111)
-plt.plot(wav,emis,color="C0")
+plt.plot(wav,emis,color="C0",label="Maunakea airmass=1 wvp = 1mm")
 plt.plot(wav2,emis2,color="C0")
 plt.yscale("log")
 plt.xscale("log")
+plt.xlim(5,20)
+plt.ylim(1.e-13,1.e-9)
 plt.xlabel("wavelength [micron]",fontsize=16)
 plt.ylabel("Foreground [J/s/arcsec2/m2/um]",fontsize=16)
-plt.title("Maunakea airmass=1 wvp = 1mm",fontsize=16)
+#plt.title("Maunakea airmass=1 wvp = 1mm",fontsize=16)
+if TAO:
+    plt.plot(tao["WL"],ftao,color="C1",label="TAO 0.34mm")
+plt.legend()
 plt.tick_params(labelsize=16)
 ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+plt.savefig("fg.png")
 plt.show()
