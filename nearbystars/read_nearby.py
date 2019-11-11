@@ -1,3 +1,4 @@
+import hz 
 import pandas as pd
 import numpy as np
 from astroquery.simbad import Simbad
@@ -12,10 +13,19 @@ pc2ly=3.261563777
 
 for i in range(0,len(dat["Name"]))[34:]:
     try:
+    #if True:
         f=open("nearby_updateA.txt","a")        
         name=str(dat["Name"][i])
         pname=str(dat["ProperName"][i])
         sptype=str(dat["Type"][i])
+        ### compute HZ ###
+        try:
+            rstar=float(dat["R(SU)"][i])
+            teff=float(dat["Teff(K)"][i])
+            Lstar=rstar**2*(teff/5772.0)**4
+            amin,amax=hz.gethz(teff,Lstar)
+        except:
+            amin,amax=None,None
         d=str(dat["D(ly)"][i]/pc2ly)
         m=str(dat["M(SU)"][i])
         r=str(dat["R(SU)"][i])
@@ -31,8 +41,11 @@ for i in range(0,len(dat["Name"]))[34:]:
         decsimbad=result_table["DEC"][0]
         com=(str(i)+"|"+name+"|"+str(rasimbad)+"|"+str(decsimbad)+"|"+\
              pname+"|"+sptype+"|"+\
-             d+"|"+m+"|"+r+"|"+t+"|"+p+"\n")
+             d+"|"+m+"|"+r+"|"+t+"|"+p+"|"+\
+             str(amin)+"|"+str(amax)+"\n")
         f.write(com)
         f.close()
     except:
-        print("Error: "+str(dat["Name"][i]))
+        rstar=float(dat["R(SU)"][i])
+        teff=float(dat["Teff(K)"][i])
+        print("Error: "+str(dat["Name"][i]),rstar,teff)
