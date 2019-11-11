@@ -10,8 +10,11 @@ Simbad.SIMBAD_URL = "http://simbad.u-strasbg.fr/simbad/sim-script"
 #def read_rawnearbystar():
 dat=pd.read_csv("nearby.txt",delimiter=";")
 pc2ly=3.261563777
-
-for i in range(0,len(dat["Name"]))[34:]:
+head="IND|name|ra|dec|propername|type|dpc|m|r|t|p|amin|amax"
+f=open("nearby_updateA.txt","a")        
+#f.write(head)
+f.close()
+for i in range(0,len(dat["Name"]))[282:]:
     try:
     #if True:
         f=open("nearby_updateA.txt","a")        
