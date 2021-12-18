@@ -1,0 +1,3 @@
+stellar_temperature_K,3000.0
+stellar_radius_rsol,0.2
+distance_pc,15.0

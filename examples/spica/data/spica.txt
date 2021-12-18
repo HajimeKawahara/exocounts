@@ -1,0 +1,13 @@
+R100
+lambda_micron,10.0
+telescope_diameter_m,2.5
+secondary_telescope_diameter_m,0.0
+dlam_micron,0.1
+throughput,0.2
+cadence_hr,0.0833
+ndark,0.17
+npix,15
+frame_sec,7.1
+nreadout,30.0
+mu, 1
+#band,"H"
