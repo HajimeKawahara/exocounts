@@ -72,7 +72,7 @@ ax.plot(magarr,sigrarr_relative,label="read noise",ls="dashed")
 pylab.legend()
 pylab.xlim(10.,12.0)
 pylab.ylim(0,600)
-ax.fill([10,satmag[0],satmag[0],10.0,10.0],[0,0,600,600,0],alpha=0.3,color="gray")
+#ax.fill([10,satmag[0],satmag[0],10.0,10.0],[0,0,600,600,0],alpha=0.3,color="gray")
 for i,dpc in enumerate(darr):
     if np.mod(dpc,5)==0:
         plt.axvline(magarr[i],ls="dashed",color="gray",alpha=0.3)
