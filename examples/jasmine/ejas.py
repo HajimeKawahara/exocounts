@@ -1,6 +1,5 @@
-import exocounts
-import csv
-import convmag
+from exocounts import exocounts
+from exocounts import convmag
 from astropy import constants as const
 from astropy import units as u
 import numpy as np
@@ -30,7 +29,7 @@ S=1.8*1.8*np.pi #core size
 obs.effnpix = S/3.0 #3 is an approx. increment factor of PSF
 obs.mu = 1 
 
-target.d=16.0 #change targets
+target.d=16.0*u.pc #change targets
 obs.target = target
 obs.update()
 
