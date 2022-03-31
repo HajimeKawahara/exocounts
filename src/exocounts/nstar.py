@@ -61,7 +61,7 @@ def getfluxJy(Target, lamin):
 #    return flux.to(u.J/u.m/u.m/u.micron/u.s)
 
 
-def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
+def Nstar(Inst,Target,Obs,info=True,integrate=True,Nintegrate=128):
     tstar=Target.teff    
     lamin=Inst.lamb
     d=Target.d
@@ -112,10 +112,10 @@ def Nstar(Inst,Target,Obs,info=False,integrate=True,Nintegrate=128):
         print("  band width", Inst.dlam,"[micron]")
         print("  exposure", Obs.texposure,"[hour] = ",Obs.texposure.to(u.min)," [min]")
         print("  throughput", Inst.throughput)
-        print("N=",'{:e}'.format(photon.to(1)))
-        print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon.to(1))*1e6,"[ppm]")
-        print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon.to(1))*1e2,"[%]")
-        print("7 sigma depth=",np.sqrt(1.0/photon.to(1))*1e2*7.0,"[%]")
+        print("N=",'{:e}'.format(photon))
+        print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon)*1e6,"[ppm]")
+        print("photon noise 1/sqrt(N)=",np.sqrt(1.0/photon)*1e2,"[%]")
+        print("7 sigma depth=",np.sqrt(1.0/photon)*1e2*7.0,"[%]")
 
     Nphoton=photon
     Obs.nphoton_exposure=Nphoton
