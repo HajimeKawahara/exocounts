@@ -96,73 +96,73 @@ def getbbfluxJy(Target, lamb):
     flux = flux.to(u.Jy)
     return flux
 
-
 def Nstar(Inst, Target, Obs, info=True, integrate=True, Nintegrate=128):
-    tstar = Target.teff
-    lamin = Inst.lamb
-    d = Target.d
-    r = Target.rstar
+    ppm = 1.e6
     texp = Obs.texposure
     a = np.pi*(Inst.dtel/2.0)**2 - np.pi*(Inst.dstel/2.0)**2
-    dl = Inst.dlam
-    contrast = Target.contrast
     if integrate:
-        ddl = dl/Nintegrate
-        lamarr = lamin+np.linspace(-dl/2, dl/2, Nintegrate)
+        ddl = Inst.dlam/Nintegrate
+        lamarr = Inst.lamb+np.linspace(-Inst.dlam/2, Inst.dlam/2, Nintegrate)
         fluxarr = []
         photonfarr = []
         photonarr = []
         for j, lamlow in enumerate(lamarr[:-1]):
             lamc = (lamarr[j+1]+lamlow)/2.0
             dll = lamarr[j+1]-lamlow
-            flux = np.pi*Blambda(tstar, lamc)*r*r/(d*d)*contrast
-            photonf = np.pi*photon_Blambda(tstar, lamc)*r*r/(d*d)*contrast
-            photon = photonf*a*dll*texp*Inst.throughput
+            flux = np.pi*Blambda(Target.teff, lamc)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+            photonf = np.pi*photon_Blambda(Target.teff, lamc)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+            photon = photonf*a*dll*Obs.texposure*Inst.throughput
             fluxarr.append(flux)
             photonfarr.append(photonf)
             photonarr.append(photon)
 
         photon = np.sum(photonarr)
     else:
-        flux = np.pi*Blambda(tstar, lamin)*r*r/(d*d)*contrast
-        photonf = np.pi*photon_Blambda(tstar, lamin)*r*r/(d*d)*contrast
-        photon = photonf*a*dl*texp*Inst.throughput
+        flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+        photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+        photon = photonf*a*Inst.dlam*Obs.texposure*Inst.throughput
         photon = photon.to(1)
 
-    flux = np.pi*Blambda(tstar, lamin)*r*r/(d*d)*contrast
-    photonf = np.pi*photon_Blambda(tstar, lamin)*r*r/(d*d)*contrast
+    flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+    photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
 
     if info:
-        print('B(lambda) for', tstar, 'at ', lamin)
-        print('{:e}'.format(Blambda(tstar, lamin).to(
-            u.erg/u.cm/u.cm/u.angstrom/u.s)))
-        print('{:e}'.format(Blambda(tstar, lamin).to(
-            u.erg/u.cm/u.cm/u.micron/u.s)))
-        print('{:e}'.format(Blambda(tstar, lamin).to(u.J/u.m/u.m/u.m/u.s)))
-        print('---------------------')
-        print('FLUX from a sphere with r=', Target.rstar,
-              '[Rsol] and', 'dpc=', d, '[pc]')
-        print(flux.to(u.erg/u.cm/u.cm/u.micron/u.s))
-        print('Photon FLUX from a sphere with  r=',
-              Target.rstar, '[Rsol] and', 'dpc=', d, '[pc]')
-        print(photonf.to(1/u.cm/u.cm/u.micron/u.s))
-        print('---------------------')
-        print('Photon Count with observation:')
-        print('  telescope diameter', Inst.dtel, '[m]')
-        print('  band width', Inst.dlam, '[micron]')
-        print('  exposure', Obs.texposure,
-              '[hour] = ', Obs.texposure.to(u.min), ' [min]')
-        print('  throughput', Inst.throughput)
-        print('N=', '{:e}'.format(photon))
-        print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e6, '[ppm]')
-        print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e2, '[%]')
-        print('7 sigma depth=', np.sqrt(1.0/photon)*1e2*7.0, '[%]')
-
+        print_info(Target,Obs,Inst,flux,photonf,photon)
+        
     Nphoton = photon
     Obs.nphoton_exposure = Nphoton
     Obs.nphoton_frame = Nphoton*(Obs.tframe/Obs.texposure).to(1)
     Obs.sign = np.sqrt(Nphoton)
     Obs.flux = flux
     Obs.photonf = photonf
-    ppm = 1.e6
     Obs.sign_relative = Obs.sign/Obs.nphoton_exposure*ppm
+
+    
+def print_info(Target,Obs,Inst,flux,photonf,photon):
+    """ print info
+    """
+    print('B(lambda) for', Target.teff, 'at ', Inst.lamb)
+    print('{:e}'.format(Blambda(Target.teff, Inst.lamb).to(
+        u.erg/u.cm/u.cm/u.angstrom/u.s)))
+    print('{:e}'.format(Blambda(Target.teff, Inst.lamb).to(
+        u.erg/u.cm/u.cm/u.micron/u.s)))
+    print('{:e}'.format(Blambda(Target.teff, Inst.lamb).to(u.J/u.m/u.m/u.m/u.s)))
+    print('---------------------')
+    print('FLUX from a sphere with r=', Target.rstar,
+          '[Rsol] and', 'dpc=', Target.d, '[pc]')
+    print(flux.to(u.erg/u.cm/u.cm/u.micron/u.s))
+    print('Photon FLUX from a sphere with  r=',
+          Target.rstar, '[Rsol] and', 'dpc=', Target.d, '[pc]')
+    print(photonf.to(1/u.cm/u.cm/u.micron/u.s))
+    print('---------------------')
+    print('Photon Count with observation:')
+    print('  telescope diameter', Inst.dtel, '[m]')
+    print('  band width', Inst.dlam, '[micron]')
+    print('  exposure', Obs.texposure,
+          '[hour] = ', Obs.texposure.to(u.min), ' [min]')
+    print('  throughput', Inst.throughput)
+    print('N=', '{:e}'.format(photon))
+    print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e6, '[ppm]')
+    print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e2, '[%]')
+    print('7 sigma depth=', np.sqrt(1.0/photon)*1e2*7.0, '[%]')
+    
