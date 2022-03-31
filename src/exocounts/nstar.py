@@ -8,6 +8,14 @@ from astropy import constants as const
 from astropy import units as u
 
 def Blambda(T,lamb):
+    """Planck distrintuion 
+
+    Args:
+       T: temperature 
+       lamb: wavelength 
+    
+    """
+    
     lamb5=(lamb.to(u.m))**5    
     fac=const.h*const.c/(lamb.to(u.m)*const.k_B*T)
     bl=2.0*(const.c**2)*const.h/lamb5/(np.exp(fac)-1)
