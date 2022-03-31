@@ -1,4 +1,4 @@
-# exocounts
+# Exocounts
 
 Exocounts computes various statistical noises of astronomical photon counts observations. Very easy task? Yes, I know, but people sometimes make mistakes in photon number calculations, which can have serious consequences.
 

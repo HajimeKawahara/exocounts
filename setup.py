@@ -11,7 +11,7 @@ META_PATH = os.path.join("src", "exocounts", "__init__.py")
 CLASSIFIERS = [
     "Programming Language :: Python",
 ]
-INSTALL_REQUIRES = ["numpy","pandas","tqdm","scipy","jax","numpyro","pyarrow","bs4","vaex"]
+INSTALL_REQUIRES = ["numpy","pandas","tqdm","scipy"]
 
 # END PROJECT SPECIFIC
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -40,7 +40,7 @@ if __name__ == "__main__":
             ),
             "write_to_template": '__version__ = "{version}"\n',
         },
-        version='1.0.0',
+        version='0.1.0',
         author=find_meta("author"),
         author_email=find_meta("email"),
         maintainer=find_meta("author"),
