@@ -1,7 +1,6 @@
 """test for nstar.
 
 """
-
 import pytest
 from exocounts.convmag import get_magdict, get_flux
 from astropy import units as u
