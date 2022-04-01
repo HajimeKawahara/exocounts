@@ -13,7 +13,6 @@ def Blambda(T, lamb):
 
     Returns:
        planck function B_lambda with the astropy unit
-
     """
     lamb5 = (lamb.to(u.m))**5
     fac = const.h*const.c/(lamb.to(u.m)*const.k_B*T)
@@ -30,7 +29,6 @@ def photon_Blambda(T, lamb):
 
     Returns:
        B_lambda/(h nu) with the astropy unit
-
     """
     pB = Blambda(T, lamb)/(const.h*const.c/(lamb.to(u.m)))
 
@@ -38,17 +36,15 @@ def photon_Blambda(T, lamb):
 
 
 def getbbflux(Target, lamb):
-    """compute blackbody flux of Target at wavelength of lambda
+    """compute blackbody flux of Target at wavelength of lambda.
 
     Args:
-       Target: TargetClass instance 
+       Target: TargetClass instance
        lamb: wavelength with the astropy.unit of length, e.g. 1.0*u.m
 
     Returns:
        flux
-
     """
-    
 
     tstar = Target.teff
     d = Target.d
@@ -59,15 +55,14 @@ def getbbflux(Target, lamb):
 
 
 def getbbfluxph(Target, lamb):
-    """compute blackbody photon flux of Target at wavelength of lambda
+    """compute blackbody photon flux of Target at wavelength of lambda.
 
     Args:
-       Target: TargetClass instance 
+       Target: TargetClass instance
        lamb: wavelength with the astropy.unit of length, e.g. 1.0*u.m
 
     Returns:
        photon flux
-
     """
 
     tstar = Target.teff
@@ -78,15 +73,15 @@ def getbbfluxph(Target, lamb):
 
 
 def getbbfluxJy(Target, lamb):
-    """compute blackbody flux of Target at wavelength of lambda in the unit of Jansky
+    """compute blackbody flux of Target at wavelength of lambda in the unit of
+    Jansky.
 
     Args:
-       Target: TargetClass instance 
+       Target: TargetClass instance
        lamb: wavelength with the astropy.unit of length, e.g. 1.0*u.m
 
     Returns:
        flux in Jansky
-
     """
 
     tstar = Target.teff
@@ -95,6 +90,7 @@ def getbbfluxJy(Target, lamb):
     flux = np.pi*Blambda(tstar, lamb)*r*r/(d*d)*lamb*lamb/const.c
     flux = flux.to(u.Jy)
     return flux
+
 
 def Nstar(Inst, Target, Obs, info=True, integrate=True, Nintegrate=128):
     ppm = 1.e6
@@ -109,8 +105,10 @@ def Nstar(Inst, Target, Obs, info=True, integrate=True, Nintegrate=128):
         for j, lamlow in enumerate(lamarr[:-1]):
             lamc = (lamarr[j+1]+lamlow)/2.0
             dll = lamarr[j+1]-lamlow
-            flux = np.pi*Blambda(Target.teff, lamc)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
-            photonf = np.pi*photon_Blambda(Target.teff, lamc)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+            flux = np.pi*Blambda(Target.teff, lamc)*Target.rstar * \
+                Target.rstar/(Target.d*Target.d)*Target.contrast
+            photonf = np.pi*photon_Blambda(Target.teff, lamc)*Target.rstar * \
+                Target.rstar/(Target.d*Target.d)*Target.contrast
             photon = photonf*a*dll*Obs.texposure*Inst.throughput
             fluxarr.append(flux)
             photonfarr.append(photonf)
@@ -118,17 +116,21 @@ def Nstar(Inst, Target, Obs, info=True, integrate=True, Nintegrate=128):
 
         photon = np.sum(photonarr)
     else:
-        flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
-        photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+        flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar * \
+            Target.rstar/(Target.d*Target.d)*Target.contrast
+        photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb) * \
+            Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
         photon = photonf*a*Inst.dlam*Obs.texposure*Inst.throughput
         photon = photon.to(1)
 
-    flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
-    photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb)*Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
+    flux = np.pi*Blambda(Target.teff, Inst.lamb)*Target.rstar * \
+        Target.rstar/(Target.d*Target.d)*Target.contrast
+    photonf = np.pi*photon_Blambda(Target.teff, Inst.lamb) * \
+        Target.rstar*Target.rstar/(Target.d*Target.d)*Target.contrast
 
     if info:
-        print_info(Target,Obs,Inst,flux,photonf,photon)
-        
+        print_info(Target, Obs, Inst, flux, photonf, photon)
+
     Nphoton = photon
     Obs.nphoton_exposure = Nphoton
     Obs.nphoton_frame = Nphoton*(Obs.tframe/Obs.texposure).to(1)
@@ -137,10 +139,9 @@ def Nstar(Inst, Target, Obs, info=True, integrate=True, Nintegrate=128):
     Obs.photonf = photonf
     Obs.sign_relative = Obs.sign/Obs.nphoton_exposure*ppm
 
-    
-def print_info(Target,Obs,Inst,flux,photonf,photon):
-    """ print info
-    """
+
+def print_info(Target, Obs, Inst, flux, photonf, photon):
+    """print info."""
     print('B(lambda) for', Target.teff, 'at ', Inst.lamb)
     print('{:e}'.format(Blambda(Target.teff, Inst.lamb).to(
         u.erg/u.cm/u.cm/u.angstrom/u.s)))
@@ -165,4 +166,3 @@ def print_info(Target,Obs,Inst,flux,photonf,photon):
     print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e6, '[ppm]')
     print('photon noise 1/sqrt(N)=', np.sqrt(1.0/photon)*1e2, '[%]')
     print('7 sigma depth=', np.sqrt(1.0/photon)*1e2*7.0, '[%]')
-    

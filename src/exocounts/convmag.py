@@ -1,22 +1,17 @@
-#!/usr/bin/python
-import sys
-import argparse
 import numpy as np
 from io import StringIO
 import pandas as pd
 from astropy import constants as const
 from astropy import units as u
+import pkgutil
+from io import BytesIO
 
 
 def get_magdict(maglist=None):
     magdict = {}
     if(maglist is None):
-        maglist = '../data/mag.list'
-
-#    print "Read "+maglist
-
-    maglist = pd.read_csv(maglist, delimiter=',')
-
+        mn = pkgutil.get_data('exocounts', 'data/mag.list')
+        maglist = pd.read_csv(BytesIO(mn), delimiter=',')
     return maglist
 
 
@@ -37,6 +32,7 @@ def get_mag(band, flux, magdict):
 
 
 if __name__ == '__main__':
+    import argparse
     parser = argparse.ArgumentParser(
         description='Convert magnitude to flux based on Traub and Oppenheimer')
     parser.add_argument('-b', nargs=1, required=True,
@@ -57,3 +53,4 @@ if __name__ == '__main__':
     flux = get_flux(band, mag, magdict)
     print(get_flux(band, mag, magdict).to(u.erg/u.s/u.m/u.m/u.nm))
     print(get_mag(band, flux, magdict))
+    
