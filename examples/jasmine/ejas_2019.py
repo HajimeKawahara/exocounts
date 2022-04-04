@@ -30,7 +30,7 @@ S=1.8*1.8*np.pi #core size
 obs.effnpix = S/3.0 #3 is an approx. increment factor of PSF
 obs.mu = 1 
 
-target.d=16.0*u.pc #change targets
+target.d=15.0*u.pc #change targets
 obs.target = target
 obs.update()
 

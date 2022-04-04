@@ -7,6 +7,9 @@ import numpy as np
 ejas=exocounts.InstClass()
 ejas.lamb = 1.25*u.micron #micron
 ejas.dlam = 0.7*u.micron #micron
+#ejas.lamb = 1.3*u.micron #micron
+#ejas.dlam = 0.6*u.micron #micron
+
 ejas.dtel = 0.34*u.m #telescope diameter m
 ejas.dstel = 0.14*u.m #secondary telescope diameter m or 12.4 (3 tels)
 
