@@ -8,30 +8,10 @@ import matplotlib.pyplot as plt
 import pylab
 import numpy as np
 
-ejas=exocounts.InstClass()
-ejas.lamb = 1.35*u.micron #micron
-ejas.dlam = 0.5*u.micron #micron
-ejas.dtel = 0.35*u.m #telescope diameter m
-ejas.dstel = 0.14*u.m #secondary telescope diameter m or 12.4 (3 tels)
-ejas.throughput = 0.8
-ejas.ndark = 15.5/u.s #dark current
-ejas.nread = 15.0 #nr
-ejas.fullwell = 150000.
+from ejas import current_jasmine
 
-target=exocounts.TargetClass()
-target.teff = 3000.0*u.K #K
-target.rstar = 0.2*const.R_sun #Rsolar
-target.d = 15.0*u.pc #pc
 
-obs=exocounts.ObsClass(ejas,target) 
-
-obs.texposure = 0.0833*u.h #cadence [hour]
-obs.tframe = 12.5*u.s  #time for one frame [sec]
-obs.napix = 15 # number of the pixels in aperture 
-obs.mu = 1 
-S=1.8*1.8*np.pi #core size
-obs.effnpix = S/3.0 #3 is an approx. increment factor of PSF
-obs.mu = 1 
+ejas, target, obs, Hw = current_jasmine()
 
 shot=[]
 dark=[]
@@ -45,9 +25,9 @@ for distpc in darr:
     target.d=distpc*u.pc #change targets
     obs.target = target
     obs.update()
-    Htmp=convmag.get_mag("H",obs.flux,magdict)
-    Jtmp=convmag.get_mag("J",obs.flux,magdict)
-    Hwtmp=0.7*Jtmp + 0.3*Htmp
+    Htmp = convmag.get_mag("J", obs.flux, magdict)
+    Jtmp = convmag.get_mag("H", obs.flux, magdict)
+    Hwtmp = 0.9 * Htmp + 0.1 * Jtmp - 0.06 * (Jtmp - Htmp)**2
     H.append(Htmp)
     J.append(Jtmp)
     Hw.append(Hwtmp)
