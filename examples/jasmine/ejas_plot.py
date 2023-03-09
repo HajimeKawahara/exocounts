@@ -27,7 +27,7 @@ for distpc in darr:
     obs.update()
     Htmp = convmag.get_mag("J", obs.flux, magdict)
     Jtmp = convmag.get_mag("H", obs.flux, magdict)
-    Hwtmp = 0.9 * Htmp + 0.1 * Jtmp - 0.06 * (Jtmp - Htmp)**2
+    Hwtmp = 0.9 * Jtmp + 0.1 * Htmp - 0.06 * (Jtmp - Htmp)**2
     H.append(Htmp)
     J.append(Jtmp)
     Hw.append(Hwtmp)
@@ -50,7 +50,7 @@ ax.plot(magarr,sigsarr_relative,label="shot noise")
 ax.plot(magarr,sigdarr_relative,label="dark noise",ls="dotted")
 ax.plot(magarr,sigrarr_relative,label="read noise",ls="dashed")
 pylab.legend()
-pylab.xlim(8.5,12.0)
+pylab.xlim(7.5,11.2)
 pylab.ylim(0,600)
 #ax.fill([10,satmag[0],satmag[0],10.0,10.0],[0,0,600,600,0],alpha=0.3,color="gray")
 for i,dpc in enumerate(darr):
@@ -61,10 +61,11 @@ ppm=1.e6
 
 ax=fig.add_subplot(212)
 ax.plot(magarr,np.sqrt(sigsarr_relative**2 + sigdarr_relative**2 + sigrarr_relative**2)/ppm*7*100)
-pylab.xlim(8.5,12.0)
+pylab.xlim(7.5,11.2)
 pylab.ylim(0,0.5)
-#ax.fill([10,satmag[0],satmag[0],10.0,10.0],[0,0,1,1,0],alpha=0.3,color="gray")
-plt.axhline(0.35,color="gray",alpha=0.2,c="orange")
+a = 7.5
+ax.fill([a,satmag[0],satmag[0],a,a],[0,0,1,1,0],alpha=0.3,color="gray")
+plt.axhline(0.30,color="gray",alpha=0.2,c="orange")
 
 for i,dpc in enumerate(darr):
     if np.mod(dpc,5)==0 and dpc>=10:
