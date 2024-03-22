@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from xarray import align
 from exocounts import exocounts
 from exocounts import planet
 from exocounts import convmag
@@ -20,15 +21,15 @@ ts.ndark = 0.0 / u.s  # dark current [e-/pix/s]
 ts.nread = 0.0  # nr [e-/pix/read]
 ts.fullwell = 1.0e7
 
-
+# loads sky background 
 dat = pd.read_csv(
     "../../data/gemini/mk_skybg_zm_10_10_ph.dat", delimiter=";", names=("wav", "ct")
 )
 wav = dat["wav"] #nm
 ct = dat["ct"]  # ph/sec/arcsec^2/nm/m^2
 
-ld = ((ts.lamb.to(u.m) / ts.dtel).value * u.radian).to(u.arcsec)
-ldarr = (((1.0 * u.nm).to(u.m) / ts.dtel).value * u.radian).to(u.arcsec) * wav # lambda/D
+
+ldarr = (((1.0 * u.nm).to(u.m) / ts.dtel).value * u.radian).to(u.arcsec) * wav # lambda/D for wavelength array 
 
 fov = ldarr * ldarr * np.pi
 A = ((ts.dtel.value) / 2) ** 2 * np.pi
@@ -54,62 +55,65 @@ print("magnitude=", convmag.get_mag("V", obs.flux, magdict))
 print(obs.nphoton_brightest)
 print("photon/pix/frame=", obs.nphoton_frame)
 
-###
+# loads 5000K spectrum
 from gollum.phoenix import PHOENIXSpectrum
-
 T = 5000
 spec = PHOENIXSpectrum(teff=T, logg=5, wl_lo=9000.0, wl_hi=56000.0)
-
-spectrum = spec.instrumental_broaden(resolving_power=1_000)
+spectrum = spec.instrumental_broaden(resolving_power=1_00000)
 flux = spectrum.flux  # absolute flux u.erg/u.cm/u.cm/u.cm/u.s, i.e. pi B
 lamb = (spectrum.spectral_axis.to(u.m)).value * 1.0e9  # nm
 
-
-print(lamb)
+# normalize flux to photon flux
 i = np.searchsorted(lamb, (ts.lamb.to(u.m)).value * 1.0e9)
-print(lamb[i])
 photonflux = flux * lamb / (flux[i] * lamb[i]) * obs.nphoton_frame
-# plt.plot(lamb,photonflux)
-# plt.show()
-###
 
+
+# loads BD spectrum
+from gollum.sonora import Sonora2017Spectrum
+Tbd=700
+specbd = Sonora2017Spectrum(teff=Tbd, logg=5.5, wl_lo=9000.0, wl_hi=56000.0)
+spectrum_bd = specbd.instrumental_broaden(resolving_power=1_00000)
+flux_bd = spectrum_bd.flux  # absolute flux u.erg/u.cm/u.cm/u.cm/u.s, i.e. pi B
+lamb_bd = (spectrum_bd.spectral_axis.to(u.m)).value * 1.0e9  # nm
+
+# normalize flux to photon flux
+i = np.searchsorted(lamb_bd, 1600.)
+photonflux_bd = flux_bd * lamb_bd / (flux_bd[i] * lamb_bd[i]) * 10.0 #tmp
+
+
+
+def fill_band(wav, Kc, dK):
+    x1 = Kc - dK / 2
+    x2 = Kc + dK / 2
+    x = wav
+    y = 1.0e7 * np.ones_like(wav)
+    plt.fill_between(x, y, where=(x > x1) & (x < x2), color="gray", alpha=0.5)
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 plt.plot(wav, ctarr*ts.throughput)
 plt.plot(lamb, photonflux, label="HD189933b, V=10")
-
+plt.plot(lamb_bd,photonflux_bd, label="T-dwarf 700K")
 # K
 Kc = 2190
 dK = 390
-x1 = Kc - dK / 2
-x2 = Kc + dK / 2
-x = wav
-y = 1.0e7 * np.ones_like(wav)
-plt.fill_between(x, y, where=(x > x1) & (x < x2), color="gray", alpha=0.5)
+fill_band(wav, Kc, dK)
 
 # L
 Lc = 3450
 dL = 472
-x1 = Lc - dL / 2
-x2 = Lc + dL / 2
-x = wav
-y = 1.0e7 * np.ones_like(wav)
-plt.fill_between(x, y, where=(x > x1) & (x < x2), color="gray", alpha=0.5)
+fill_band(wav, Lc, dL)
 
 # M
 Mc = 4750
 dM = 460
-x1 = Mc - dM / 2
-x2 = Mc + dM / 2
-x = wav
-y = 1.0e7 * np.ones_like(wav)
-plt.fill_between(x, y, where=(x > x1) & (x < x2), color="gray", alpha=0.5)
+fill_band(wav, Mc, dM)
 
-ylab = 1.0e-2
-plt.text(Kc, ylab, "K")
-plt.text(Lc, ylab, "L")
-plt.text(Mc, ylab, "M")
+ylab = 1.0e-3
+fs = 12
+plt.text(Kc, ylab, "K", fontsize=fs)
+plt.text(Lc, ylab, "L", fontsize=fs)
+plt.text(Mc, ylab, "M", fontsize=fs)
 
 plt.yscale("log")
 plt.ylabel("ph/sec/nm")
@@ -117,3 +121,4 @@ plt.xlabel("nm")
 plt.title("optimal aperture (defraction limit)")
 plt.legend()
 plt.show()
+
