@@ -78,7 +78,13 @@ lamb_bd = (spectrum_bd.spectral_axis.to(u.m)).value * 1.0e9  # nm
 
 # normalize flux to photon flux
 i = np.searchsorted(lamb_bd, 1600.)
-photonflux_bd = flux_bd * lamb_bd / (flux_bd[i] * lamb_bd[i]) * 10.0 #tmp
+sn=50 # Gl229B for 2hrs
+t = 2*3600 #sec
+pix_nm = 0.01 # IRD pixel = 0.1A
+ird_throughput = 0.04
+ct = sn**2/t/pix_nm*ts.throughput/ird_throughput
+print(ct)
+photonflux_bd = flux_bd * lamb_bd / (flux_bd[i] * lamb_bd[i]) * ct #tmp
 
 
 
@@ -91,9 +97,10 @@ def fill_band(wav, Kc, dK):
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-plt.plot(wav, ctarr*ts.throughput)
+plt.plot(wav, ctarr*ts.throughput, alpha=0.5, label="sky background @ Maunake (best)")
 plt.plot(lamb, photonflux, label="HD189933b, V=10")
-plt.plot(lamb_bd,photonflux_bd, label="T-dwarf 700K")
+plt.plot(lamb_bd,photonflux_bd, label="Gl229B T-dwarf 700K")
+plt.ylim(1.e-2,1.e8)
 # K
 Kc = 2190
 dK = 390
@@ -109,7 +116,7 @@ Mc = 4750
 dM = 460
 fill_band(wav, Mc, dM)
 
-ylab = 1.0e-3
+ylab = 1.0e5
 fs = 12
 plt.text(Kc, ylab, "K", fontsize=fs)
 plt.text(Lc, ylab, "L", fontsize=fs)
